@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembri-i - Gestão de Lembretes</title>
+    <!-- Inclui a biblioteca Tailwind CSS para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Define a fonte Inter para uma aparência limpa -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        /* Estilos globais para a página */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para focar nos campos do formulário */
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Cor azul claro */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-8 space-y-8">
+        <header class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800">LembrAI</h1>
+            <p class="mt-2 text-gray-600">Sua plataforma de gestão de lembretes e cobranças.</p>
+        </header>
+
+        <!-- Formulário para criar um novo lembrete -->
+        <section>
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Criar Novo Lembrete</h2>
+            <form id="lembreteForm" class="space-y-4">
+                <div>
+                    <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
+                    <input type="text" id="titulo" name="titulo" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label for="descricao" class="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea id="descricao" name="descricao" rows="3" required
+                              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nomeDevedor" class="block text-sm font-medium text-gray-700">Nome do Devedor</label>
+                        <input type="text" id="nomeDevedor" name="nomeDevedor" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="dataHora" class="block text-sm font-medium text-gray-700">Data e Hora</label>
+                        <input type="datetime-local" id="dataHora" name="dataHora" required
+                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="valorDivida" class="block text-sm font-medium text-gray-700">Valor da Dívida (R$)</label>
+                    <input type="number" id="valorDivida" name="valorDivida" step="0.01" min="0" required
+                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" id="concluido" name="concluido"
+                           class="h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                    <label for="concluido" class="ml-2 block text-sm text-gray-900">Concluído?</label>
+                </div>
+
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Salvar Lembrete
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Seção para exibir a lista de lembretes -->
+        <section>
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Lembretes Criados</h2>
+            <div id="lembretesList" class="space-y-4">
+                <!-- Os lembretes serão injetados aqui via JavaScript -->
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // O URL da sua API. Certifique-se de que corresponda ao seu backend.
+        const API_URL = 'http://localhost:8080/api/lembretes';
+        const form = document.getElementById('lembreteForm');
+        const lembretesList = document.getElementById('lembretesList');
+
+        /**
+         * Realiza uma requisição GET para buscar todos os lembretes e renderizá-los.
+         */
+        async function fetchLembretes() {
+            try {
+                const response = await fetch(API_URL);
+                const lembretes = await response.json();
+                renderLembretes(lembretes);
+            } catch (error) {
+                console.error("Erro ao buscar lembretes:", error);
+                lembretesList.innerHTML = `<p class="text-red-500">Não foi possível carregar os lembretes. Verifique se o servidor está rodando.</p>`;
+            }
+        }
+
+        /**
+         * Renderiza a lista de lembretes na página.
+         * @param {Array<Object>} lembretes - A lista de objetos de lembrete.
+         */
+        function renderLembretes(lembretes) {
+            lembretesList.innerHTML = ''; // Limpa a lista antes de renderizar
+            if (lembretes.length === 0) {
+                lembretesList.innerHTML = `<p class="text-gray-500 text-center">Nenhum lembrete criado ainda.</p>`;
+                return;
+            }
+
+            lembretes.forEach(lembrete => {
+                const lembreteDiv = document.createElement('div');
+                const isConcluido = lembrete.concluido;
+                
+                // Mudei o card de pendente para vermelho, mantendo o azul original comentado.
+                lembreteDiv.className = `p-4 border-l-4 rounded-lg shadow-md ${isConcluido ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}`;
+                // lembreteDiv.className = `p-4 border-l-4 rounded-lg shadow-md ${isConcluido ? 'bg-green-100 border-green-500' : 'bg-blue-100 border-blue-500'}`;
+                
+                const valorFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(lembrete.valorDivida);
+                const dataHoraFormatada = new Date(lembrete.dataHora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+                lembreteDiv.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-gray-800">${lembrete.titulo}</h3>
+                        ${isConcluido ? '<span class="text-sm font-medium text-green-700 bg-green-200 px-2 py-1 rounded-full">Concluído</span>' : '<span class="text-sm font-medium text-red-700 bg-red-200 px-2 py-1 rounded-full">Pendente</span>'}
+                    </div>
+                    <p class="mt-2 text-sm text-gray-600">${lembrete.descricao}</p>
+                    <p class="mt-2 text-sm text-gray-700">
+                        <span class="font-semibold">Devedor:</span> ${lembrete.nomeDevedor}
+                    </p>
+                    <p class="text-sm text-gray-700">
+                        <span class="font-semibold">Valor:</span> ${valorFormatado}
+                    </p>
+                    <p class="text-sm text-gray-700">
+                        <span class="font-semibold">Vencimento:</span> ${dataHoraFormatada}
+                    </p>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="marcarComoConcluido('${lembrete.id}', ${JSON.stringify(lembrete).replace(/"/g, "'")})" 
+                                class="px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                                ${isConcluido ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}"
+                                ${isConcluido ? 'disabled' : ''}>
+                                Marcar como Concluído
+                        </button>
+                    </div>
+                `;
+                lembretesList.appendChild(lembreteDiv);
+            });
+        }
+
+        /**
+         * Envia uma requisição PUT para o back-end para marcar um lembrete como concluído.
+         * @param {string} id - O ID do lembrete a ser atualizado.
+         * @param {object} lembreteData - Os dados completos do lembrete.
+         */
+        async function marcarComoConcluido(id, lembreteData) {
+            // Cria um novo objeto com os dados atualizados
+            const lembreteAtualizado = {
+                ...lembreteData,
+                concluido: true
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(lembreteAtualizado)
+                });
+
+                if (response.ok) {
+                    alert('Lembrete marcado como concluído com sucesso!');
+                    fetchLembretes(); // Atualiza a lista para refletir a mudança
+                } else {
+                    const error = await response.json();
+                    console.error("Erro ao atualizar lembrete:", error);
+                    alert("Erro ao marcar como concluído. Por favor, tente novamente.");
+                }
+            } catch (error) {
+                console.error("Erro de rede:", error);
+                alert("Erro de rede. Verifique se o backend está em execução.");
+            }
+        }
+
+        /**
+         * Lida com o envio do formulário, enviando os dados para a API.
+         * @param {Event} event - O evento de submissão do formulário.
+         */
+        async function handleFormSubmit(event) {
+            event.preventDefault(); // Impede o comportamento padrão do formulário
+
+            const form = event.target;
+            const lembrete = {
+                titulo: form.titulo.value,
+                descricao: form.descricao.value,
+                dataHora: form.dataHora.value,
+                nomeDevedor: form.nomeDevedor.value,
+                // O valor da dívida é agora convertido para centavos no frontend
+                valorDivida: Math.round(parseFloat(form.valorDivida.value) * 100),
+                concluido: form.concluido.checked
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(lembrete)
+                });
+
+                if (response.ok) {
+                    // Limpa o formulário e atualiza a lista após o sucesso
+                    form.reset();
+                    alert('Lembrete criado e enviado com sucesso!');
+                    fetchLembretes();
+                } else {
+                    const error = await response.json();
+                    console.error("Erro ao salvar lembrete:", error);
+                    alert("Erro ao salvar o lembrete. Por favor, tente novamente.");
+                }
+            } catch (error) {
+                console.error("Erro de rede:", error);
+                alert("Erro de rede. Verifique se o backend está em execução.");
+            }
+        }
+
+        // Adiciona um listener para o evento de submissão do formulário
+        form.addEventListener('submit', handleFormSubmit);
+
+        // Carrega a lista de lembretes quando a página é carregada
+        window.addEventListener('DOMContentLoaded', fetchLembretes);
+
+    </script>
+
+</body>
+</html>
