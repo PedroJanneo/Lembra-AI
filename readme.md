@@ -2,7 +2,9 @@
 
 LembrAI é uma plataforma de gestão de lembretes com cobranças, integrando notificações via WhatsApp (Twilio) e pagamentos online (Stripe).
 
-você ja deu um passeio com um amigo, e na pressa ou por outras quetsões, acabou passando seu cartão/usou seu dinheiro, e ele falou "Depois pago" ?
+## Problema resolvido.
+
+Você ja deu um passeio com um amigo, e na pressa ou por outras quetsões, acabou passando seu cartão/usou seu dinheiro, e ele falou "Depois pago" ?
 Bem esse sistema é para resolver este seu problema... você consegue configurar a cobrança ( colocando o Nome do amigo, o que ele te deve, quando foi e quanto foi), e com isso,ele manda uma mensagem automatica para o Whatsapp do amigo, falando sobre a cobrança, junto co o link de pagamento no Stripe.
 
 ## Funcionalidades
