@@ -31,7 +31,7 @@ Bem esse sistema é para resolver este seu problema... você consegue configurar
 
 ## Como Executar
 
-1. **Banco de Dados:** Configure o MySQL e ajuste as credenciais em [`application.properties`](lembrai/src/main/resources/application--.properties).
+1. **Banco de Dados:** Configure o MySQL e ajuste as credenciais em [`application.properties`](lembrai/src/main/resources/application.properties).
 2. **Dependências:** Instale usando Maven:
     ```sh
     ./mvnw clean install
@@ -44,8 +44,8 @@ Bem esse sistema é para resolver este seu problema... você consegue configurar
 
 ## Configuração de Integrações ( API´s externas)
 
-- **Twilio:** Adicione suas credenciais em [`application.properties`](lembrai/src/main/resources/application--.properties).
-- **Stripe:** Adicione suas chaves e URL de compra em [`application.properties`](lembrai/src/main/resources/application--.properties).
+- **Twilio:** Adicione suas credenciais em [`application.properties`](lembrai/src/main/resources/application.properties).
+- **Stripe:** Adicione suas chaves e URL de compra em [`application.properties`](lembrai/src/main/resources/application.properties).
 
 ## Testes
 
@@ -54,8 +54,8 @@ Os testes de contexto estão em [`LembraiApplicationTests`](lembrai/src/test/jav
 
 ## Imagens FrontEnd
 
-![imagem front um](.\images\lembraAi.png)
-![imagem front um](.\images\lembraAi2.png)
+![imagem front um](images\lembrAi.png)
+![imagem front dois](images\lembrAi2.png)
 
 ## Licença
 
