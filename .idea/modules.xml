@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Lembra-AI.iml" filepath="$PROJECT_DIR$/.idea/Lembra-AI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lembrai/lembrai.iml" filepath="$PROJECT_DIR$/lembrai/lembrai.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/lembrai.iml" filepath="$PROJECT_DIR$/.idea/lembrai.iml" />
     </modules>
   </component>
 </project>
