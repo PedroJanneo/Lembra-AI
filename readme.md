@@ -54,8 +54,14 @@ Os testes de contexto estão em [`LembraiApplicationTests`](lembrai/src/test/jav
 
 ## Imagens FrontEnd
 
+<<<<<<< HEAD
 ![imagem front um](images\lembrAi.png)
 ![imagem front dois](images\lembrAi2.png)
+=======
+![imagem front um](./images/lembrAi.png)
+
+![imagem front dois](./images/lembrAi2.png)
+>>>>>>> f95156e8ccbf9dc20ec14afe7b3b74590eedc87c
 
 ## Licença
 
