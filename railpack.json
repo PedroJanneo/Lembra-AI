@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "steps": [
+    {
+      "commands": [
+        { "cmd": "cd lembrai && ./mvnw clean package -DskipTests" }
+      ],
+      "caches": ["~/.m2"]
+    }
+  ],
+  "deploy": {
+    "base": "openjdk:17-jdk",
+    "startCommand": "java -jar lembrai/target/lembrai-0.0.1-SNAPSHOT.jar",
+    "inputs": ["lembrai/target"]
+  }
+}
