@@ -9,7 +9,7 @@
     }
   ],
   "deploy": {
-    "base": "openjdk:17",
+    "base": "java",
     "startCommand": "java -jar lembrai/target/lembrai-0.0.1-SNAPSHOT.jar",
     "inputs": ["lembrai/target"]
   }
